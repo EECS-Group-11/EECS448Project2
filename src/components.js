@@ -2,6 +2,7 @@ import GameBoardComponent from './components/GameBoard.component.js'
 import GridCellComponent from './components/GridCell.component.js'
 import TopLevelComponent from './components/TopLevel.component.js'
 import ScoreBoardComponent from './components/ScoreBoard.component.js'
+import AI from './components/AI.component.js'
 
 /*
  * This is where various components we define should be registered.
@@ -12,4 +13,5 @@ export default {
     GridCellComponent,
     TopLevelComponent,
     ScoreBoardComponent,
+    AI,
 }
