@@ -16,14 +16,15 @@ class AI {
 	
 	//guess logic function, returns coordinates? I think
 	fireLocation() {
-		if (difficulty === AID.Easy) {
-		
+		if (this.difficulty === AID.Easy) {
+			loc = [Math.floor(Math.random() * 9), Math.floor(Math.random() * 9)]
 		}
-		else if (difficulty === AID.Medium) {
+		else if (this.difficulty === AID.Medium) {
 		
 		}
 		else {
-		
+			opponent = game_service.player_x_game_board[Player.One]
+			
 		}
 	}
 }
