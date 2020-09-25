@@ -6,7 +6,6 @@ import {GameSounds} from '../module/sounds.js'
 
 const template = `
 <div class="top-level-container">
-	<ai></ai>
     <div class="top-level-component">
         <div v-if="current_state === GameState.ChoosingNumberOfShips" class="game-choose-ships-container">
             <span v-if="instructions"><h1 class="instructions">{{ instructions }}</h1></span>

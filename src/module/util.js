@@ -25,6 +25,22 @@ export const GridCellState = {
 }
 
 /**
+ * Enum of all possible AI difficulties
+ * @type {object}
+ */
+export const AIDifficulty = {
+	//easy
+	Easy: "easy",
+	
+	//medium
+	Medium: "med",
+	
+	//hard
+	Hard: "vietnam",
+}
+
+
+/**
  * Returns true if the given grid cell state represents a ship in some way.
  * @param {GridCellState} grid_cell_state
  * @return {boolean}
