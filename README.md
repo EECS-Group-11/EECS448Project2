@@ -31,9 +31,16 @@ cd documentation
 ./generate.sh
 ```
 
-## Contributors
+## Original Contributors
 - Lucas Brakenridge
 - Javier Barea Lara
 - Garrett Mills
 - Evan Powell
 - Alec Horlick-Mills
+## New Contributors
+- Zach Delong
+- Ethan Grantz
+- Yan Liu
+- Alex Reeves
+- QiTao Weng
+
