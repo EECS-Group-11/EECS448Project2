@@ -1,7 +1,7 @@
 # Battleship
-## EECS 448 - Project 1
+## EECS 448 - Project 2
 
-This is a basic battleship game created as our submission for project 1 for EECS 448 at the University of Kansas.
+This battleship game created as our submission for project 2 for EECS 448 at the University of Kansas with improvements from the project 1 of another team.
 
 ## Structure Info
 This project has been wired up to use Vue.js to help organize components of the game.
@@ -31,23 +31,15 @@ cd documentation
 ./generate.sh
 ```
 
-## Third-Party Libraries
-The files in the `lib/` are external libraries used in this project.
-
-- Vue.js
-    - A front-end framework. Used under the terms of the MIT license.
-    - https://github.com/vuejs/vue
-- VuES6.js
-    - A kind-of crappy loader for defining Vue components using ES6 classes.
-    - Also used under the terms of the MIT license.
-    - https://code.garrettmills.dev/garrettmills/vues6
-- Sound effects obtained from https://www.zapsplat.com and used with permission.
-- Button animations obtained from https://codepen.io/atloomer and https://www.youtube.com/watch?v=MLfAW55_4cY , and used with permission.
-- HR line animations obtained from https://codepen.io/Grienauer and used with permission.
-
-## Contributors
+## Original Contributors
 - Lucas Brakenridge
 - Javier Barea Lara
 - Garrett Mills
 - Evan Powell
 - Alec Horlick-Mills
+## New Contributors
+- Zach Delong
+- Ethan Grantz
+- Yan Liu
+- Alex Reeves
+- QiTao Weng
