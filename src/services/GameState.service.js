@@ -1,5 +1,6 @@
 import { Player, GridCellState, GameState, clone, ShipType, isShipType, isShipCell, isValidTargetCell } from '../module/util.js'
 import { InvalidShipPlacementError, InvalidAdvanceStateError, InvalidMissileFireAttemptError } from '../module/errors.js'
+import theAI from './AI.service.js'
 
 /**
  * Singleton service for managing the state of the game.
@@ -280,9 +281,9 @@ export class GameStateService {
         /** functions to be made that validate:
          * 1) number of ships
          * 2) player one placement
-         * 3) player two placement
+         * 3) player two placement OR AI generate board
          * 4) player one turn
-         * 5) advance to player 2
+         * 5) advance to player 2 OR Ai proceeds to completely destroy you
          * 6) player 2 turn
          * 7) advance to player one
          * 8) player win

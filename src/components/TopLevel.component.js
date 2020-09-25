@@ -6,15 +6,11 @@ import {GameSounds} from '../module/sounds.js'
 
 const template = `
 <div class="top-level-container">
+	<ai></ai>
     <div class="top-level-component">
         <div v-if="current_state === GameState.ChoosingNumberOfShips" class="game-choose-ships-container">
             <span v-if="instructions"><h1 class="instructions">{{ instructions }}</h1></span>
             <div class="btn_container">
-<!--                <button @click="ship(1)" class="btn btn1">1 ship</button>
-                <button @click="ship(2)" class="btn btn2">2 ships</button>
-                <button @click="ship(3)" class="btn btn3">3 ships</button>
-                <button @click="ship(4)" class="btn btn4">4 ships</button>
-                <button @click="ship(5)" class="buttonTest">5 ships</button>-->
                 <div class="buttonTest" id="buttonOption2">
                     <button @click="ship(1)" id="dub-arrow"><img src="https://github.com/atloomer/atloomer.github.io/blob/master/img/iconmonstr-arrow-48-240.png?raw=true" alt="" />
                     </button>
@@ -44,7 +40,6 @@ const template = `
         </div>
         <div v-if="current_state === GameState.PromptPlayerChange" class="game-player-change-container">
             it is now {{ current_player_display }}'s turn!
-<!--            <button @click="confirm_player_change" class="playerBtn">continue</button>-->
             <div class="buttonTest" id="buttonOption2">
                     <button @click="confirm_player_change" id="dub-arrow"><img src="https://github.com/atloomer/atloomer.github.io/blob/master/img/iconmonstr-arrow-48-240.png?raw=true" alt="" />
                     </button>
