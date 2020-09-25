@@ -4,8 +4,12 @@ import {instructions} from '../module/lang.js'
 import game_service from '../services/GameState.service.js'
 import {GameSounds} from '../module/sounds.js'
 
+//creating a button to test ai functionality
+import theAI from '../services/AI.service.js'
+
 const template = `
 <div class="top-level-container">
+    <button @click="ai.fireLocation()">AI TEST BUTTON</button>
     <div class="top-level-component">
         <div v-if="current_state === GameState.ChoosingNumberOfShips" class="game-choose-ships-container">
             <span v-if="instructions"><h1 class="instructions">{{ instructions }}</h1></span>
@@ -66,7 +70,7 @@ const template = `
                 ></app-game-board>
                 <div class="fleet-label">Opposing fleet</div>
             </div>
-    
+
             <!-- Player's board -->
             <div class="game-board">
                 <app-game-board
@@ -92,7 +96,7 @@ const template = `
                 ></app-game-board>
                 <div class="fleet-label">{{ current_player_display }}'s fleet (winner)</div>
             </div>
-    
+
             <!-- Loser's board -->
             <div class="game-board">
                 <app-game-board
@@ -114,6 +118,8 @@ class TopLevelComponent extends Component {
     static get selector() { return 'app-top-level' }
     static get template() { return template }
     static get props() { return [] }
+
+    ai = theAI
 
     /**
      * Make the game state accessible w/in the template.

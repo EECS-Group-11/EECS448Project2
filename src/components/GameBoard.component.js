@@ -31,6 +31,7 @@ const template  = `
                 @click="on_cell_click(i,j)"
                 @hover="on_cell_hover(i,j)"
                 v-bind:has_ghost_ship="is_ghost_cell(i,j)"
+                :key="j"
             ></app-game-cell>
         </div>
          <div class="column_labels">
