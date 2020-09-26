@@ -43,7 +43,7 @@ class AI {
 						else if (j > 0 && opponent[i][j - 1].render === GridCellState.Available) {
 							return [i, j - 1]
 						}
-						else if (j < opponent[0].length && opponent[i][j + 1].render === GridCellState.Available) {
+						else if (j < opponent[0].length - 1 && opponent[i][j + 1].render === GridCellState.Available) {
 							return [i, j + 1]
 						}
 					}
