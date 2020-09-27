@@ -132,6 +132,9 @@ export class GameStateService {
      */
     game_state_change_listeners = []
 
+    /**yo broh its the ai thing*/
+    has_ai = true
+
     /**
      * Construct a new game service. Initialize any internal states.
      */
@@ -326,10 +329,14 @@ export class GameStateService {
         }
         else if (this.current_state === GameState.PlayerTurn && this.current_player === Player.One) {
             if (this.current_turn_had_missile_attempt === true) {
+              //if (!this.has_ai) {
                 this.current_state = GameState.PromptPlayerChange;
                 this.post_player_change_state = GameState.PlayerTurn;
                 this.current_player = Player.Two;
                 this.current_opponent = Player.One;
+              //} else {
+
+              //}
             }
             else {
                 throw new InvalidAdvanceStateError("the player has not fired a missle");
