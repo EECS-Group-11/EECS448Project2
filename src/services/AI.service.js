@@ -21,7 +21,8 @@ class AI {
 		//generates list of nonboat spaces for use in Easy and Medium
 		for (let i = 0; i < opponent.length; i++) {
 			for (let j = 0; j < opponent[0].length; j++) {
-				if (opponent[i][j].render === GridCellState.Available) listOfLocs.push([i,j])
+				if (opponent[i][j].render === GridCellState.Available || opponent[i][j].render === GridCellState.Ship)
+				 listOfLocs.push([i,j])
 			}
 		}
 
@@ -34,16 +35,16 @@ class AI {
 			for (let i = 0; i < opponent.length; i++) {
 				for (let j = 0; j < opponent[0].length; j++) {
 					if (opponent[i][j].render === GridCellState.Damaged) {
-						if (i > 0 && opponent[i - 1][j].render === GridCellState.Available) {
+						if (i > 0 && (opponent[i - 1][j].render === GridCellState.Available || opponent[i - 1][j].render === GridCellState.Ship)) {
 							return [i - 1, j]
 						}
-						else if (i < opponent.length - 1 && opponent[i + 1][j].render === GridCellState.Available) {
+						else if (i < opponent.length - 1 && (opponent[i + 1][j].render === GridCellState.Available || opponent[i + 1][j].render === GridCellState.Ship)) {
 							return [i + 1, j]
 						}
-						else if (j > 0 && opponent[i][j - 1].render === GridCellState.Available) {
+						else if (j > 0 && (opponent[i][j - 1].render === GridCellState.Available || opponent[i][j - 1].render === GridCellState.Ship)) {
 							return [i, j - 1]
 						}
-						else if (j < opponent[0].length - 1 && opponent[i][j + 1].render === GridCellState.Available) {
+						else if (j < opponent[0].length - 1 && (opponent[i][j + 1].render === GridCellState.Available || opponent[i][j + 1].render === GridCellState.Ship)) {
 							return [i, j + 1]
 						}
 					}
