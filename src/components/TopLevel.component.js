@@ -9,7 +9,6 @@ import theAI from '../services/AI.service.js'
 
 const template = `
 <div class="top-level-container">
-    <button @click="ai.fireLocation()">AI TEST BUTTON</button>
     <div class="top-level-component">
         <div v-if="current_state === GameState.ChoosingNumberOfShips" class="game-choose-ships-container">
             <span v-if="instructions"><h1 class="instructions">{{ instructions }}</h1></span>
