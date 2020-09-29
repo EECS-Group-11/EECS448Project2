@@ -10,7 +10,9 @@ const instructions = {
   [GameState.ChoosingNumberOfShips]: 'Select the number of ships both players will play with.',
   [GameState.PlayerSetup]: 'Place your ships on your fleet\'s grid. You can hold the shift key to change the orientation.',
   [GameState.PlayerTurn]: 'Select a cell on the opposing fleet\'s grid to fire a missile.',
-  [GameState.PlayerVictory]: '{player} won!'
+  [GameState.PlayerVictory]: '{player} won!',
+  [GameState.ChoosingGameMode]: 'Select game mode.',
+  [GameState.ChoosingAIDifficulty]: 'Select AI difficulty.'
 }
 
 export { instructions }
