@@ -266,8 +266,14 @@ class TopLevelComponent extends Component {
      */
     confirm_player_change() {
         game_service.advance_game_state()
-        if (game_service.has_ai && game_service.get_current_player() === game_service.players[1] && this.player_is_firing_missiles) {
-          this.on_missile_fired(this.ai.fireLocation())
+        if (game_service.has_ai && game_service.get_current_player() === game_service.players[1]) {
+          if (this.player_is_placing_ships) {
+            this.ai.generateBoats();
+            //this.on_ship_placed() uncomment once generateBoats works
+          }
+          else if (this.player_is_firing_missiles) {
+            this.on_missile_fired(this.ai.fireLocation())
+          }
         }
     }
 }

@@ -10,7 +10,7 @@ class AI {
 
 	//rng based game board setup function
 	generateBoats() {
-
+		console.log("generate boats")
 	}
 
 	//guess logic function, returns coordinates? I think

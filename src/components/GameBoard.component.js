@@ -124,6 +124,7 @@ class GameBoardComponent extends Component {
      * @param {number} cell_i - the index of the cell
      */
     on_cell_click(row_i, cell_i) {
+      if (!game_service.has_ai || game_service.get_current_player() === game_service.players[0]) {
         if ( this.is_placement_mode && this.ships_to_place[0] ) {
             // We should try to place a ship here
             if ( this.ship_ghost_cells.length > 0 ) {
@@ -137,6 +138,7 @@ class GameBoardComponent extends Component {
         } else if ( this.is_missile_mode ) {
             this.$emit('missilefired', [row_i, cell_i])
         }
+      }
     }
 
     /**
