@@ -6,22 +6,25 @@ const template = `
 <div class="app-scoreboard-component">
     <table class="scoreboard_table" style="width:50%">
         <tr class="scoreboard_rows">
-            <th class="scoreboard_table_header" colspan="3">scoreboard</th>            
+            <th class="scoreboard_table_header" colspan="4">scoreboard</th>            
         </tr>
         <tr class="scoreboard_header_playerScoreProgress">
             <td class="scoreboard_data">player</td>
             <td class="scoreboard_data">score</td>
             <td class="scoreboard_data">progress</td>
+            <td class="scoreboard_data">remaining bombs</td>
         </tr>
         <tr class="scoreboard_rows_score&progress">
-            <td class="scoreboard_player">{{ current_player === Player.One ? '➜ ' : '' }}player_1{{ winning_player === Player.One ? ' ★' : '' }}</td>
+            <td class="scoreboard_player">{{ current_player === Player.One ? '➜' : '' }}player_1{{ winning_player === Player.One ? ' ★' : '' }}</td>
             <td class="scoreboard_data_value">{{player_one_score}}</td>
             <td class="scoreboard_data_value">{{player_one_progress * 100}}%</td>
+            <td class="scoreboard_data_value">{{player_one_bombs}}</td>
         </tr>
         <tr class="scoreboard_lastRow">
-            <td class="scoreboard_player">{{ current_player === Player.Two ? '➜ ' : '' }}player_2{{ winning_player === Player.Two ? ' ★' : '' }}</td>
+            <td class="scoreboard_player">{{ current_player === Player.Two ? '➜' : '' }}player_2{{ winning_player === Player.Two ? ' ★' : '' }}</td>
             <td class="scoreboard_data_value">{{player_two_score}}</td>
             <td class="scoreboard_data_value">{{player_two_progress * 100}}%</td>
+            <td class="scoreboard_data_value">{{player_two_bombs}}</td>
         </tr>
     </table>
 </div>
@@ -61,6 +64,18 @@ class ScoreBoardComponent extends Component {
     player_two_progress = 0
 
     /**
+     * The number of bombs for player 1.
+     * @type {number}
+     */
+    player_one_bombs = 1
+
+    /**
+     * The number of bombs for player 2.
+     * @type {number}
+     */
+    player_two_bombs = 1
+
+    /**
      * The current player.
      * @type {string|undefined}
      */
@@ -95,6 +110,9 @@ class ScoreBoardComponent extends Component {
         this.player_two_score = game_service.get_player_score(Player.Two)
         this.player_one_progress = game_service.get_progress(Player.One)
         this.player_two_progress = game_service.get_progress(Player.Two)
+        this.player_one_bombs = game_service.get_player1_bombs()
+        this.player_two_bombs = game_service.get_player2_bombs()
+
 
         if ( game_service.get_game_state() !== GameState.PlayerVictory )
             this.current_player = game_service.get_current_player()

@@ -89,6 +89,13 @@ class GameBoardComponent extends Component {
     bound_fns = []
 
     /**
+     * Keeps track of when the bomb firing mode is active
+     * cannot be set to true when a player has no bambs left
+     * @type {boolean}
+     */
+    bomb_mode = false
+
+    /**
      * Called when the component is initialized.
      * @return {Promise<void>}
      */
@@ -99,10 +106,11 @@ class GameBoardComponent extends Component {
         // pressed/released the shift key.
         const keyup_fn = this.on_keyup.bind(this)
         const keydown_fn = this.on_keydown.bind(this)
+        const keypress_fn = this.on_keypress.bind(this)
         this.bound_fns.push(keyup_fn, keydown_fn)
-
         window.addEventListener('keyup', keyup_fn)
         window.addEventListener('keydown', keydown_fn)
+        window.addEventListener('keypress', keypress_fn)
     }
 
     /**
@@ -114,11 +122,12 @@ class GameBoardComponent extends Component {
         const [keyup_fn, keydown_fn] = this.bound_fns
         window.removeEventListener('keyup', keyup_fn)
         window.removeEventListener('keydown', keydown_fn)
+        window.removeEventListener('keypress', keypress_fn)
     }
 
     /**
      * Called when a user clicks a cell. If in placement mode, will attempt to place
-     * a ship. If in missile mode, will attempt to fire a missile.
+     * a ship. If in missile mode, will attempt to fire a missile or a bomb if bomb_mode is true
      * @param {number} row_i - the index of the row
      * @param {number} cell_i - the index of the cell
      */
@@ -133,9 +142,19 @@ class GameBoardComponent extends Component {
                 game_service.place_ship(this.ships_to_place[0], coord_one, coord_two)
                 this.$emit('shipplaced')
             }
-        } else if ( this.is_missile_mode ) {
-            this.$emit('missilefired', [row_i, cell_i])
+        } else if ( this.is_missile_mode && !this.bomb_mode ) {
+           this.$emit('missilefired', [row_i, cell_i])
         }
+         else if ( this.bomb_mode ) {
+            this.bomb_used = true;
+            if(!this.shift_pressed){
+                this.$emit('bombfired', cell_i)
+            }else{
+                this.$emit('horizbombfired', row_i)
+            }
+            
+        }
+        
     }
 
     /**
@@ -174,7 +193,22 @@ class GameBoardComponent extends Component {
             } else {
                 this.ship_ghost_cells = []
             }
-        } else {
+        //check to see if bomb mode is activated
+        }else if(this.bomb_mode) {
+            const ghost_cells = [[row_i, cell_i]]
+            if(!this.shift_pressed){
+                for ( let i = 0; i < 9; i++ ) {
+                    ghost_cells.push([i, cell_i])
+                }
+            }else{
+                for ( let i = 0; i < 9; i++ ) {
+                    ghost_cells.push([row_i, i])
+                }
+            }
+            this.ship_ghost_cells = ghost_cells
+
+        }
+         else {
             this.ship_ghost_cells = []
         }
     }
@@ -230,6 +264,22 @@ class GameBoardComponent extends Component {
                 this.on_cell_hover(this.ship_ghost_cells[0][0], this.ship_ghost_cells[0][1])
             }
         }
+    }
+    /**
+     * When keypressed, check to see if the space bar was pressed.
+     * @param event
+     */
+    on_keypress(event){
+        if(event.keyCode === 32){
+            if(game_service.get_player_bombs() > 0){
+                if(this.bomb_mode === false){
+                    this.bomb_mode = true
+                }else{
+                this.bomb_mode = false
+                }
+            }
+        }
+
     }
 }
 

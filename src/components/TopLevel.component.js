@@ -69,6 +69,8 @@ const template = `
                     v-bind:rows="opponent_rows"
                     v-bind:is_missile_mode="player_is_firing_missiles"
                     @missilefired="on_missile_fired"
+                    @bombfired="on_bomb_fired"
+                    @horizbombfired="on_horiz_bomb_fired"
                 ></app-game-board>
                 <div class="fleet-label">Opposing fleet</div>
             </div>
@@ -252,6 +254,49 @@ class TopLevelComponent extends Component {
             this.$nextTick(async () => {
                 await GameSounds.Fire.play()
                 const success = game_service.attempt_missile_fire([row_index, column_index])
+
+                if ( success ) await GameSounds.Hit.play()
+                else await GameSounds.Miss.play()
+
+                game_service.advance_game_state()
+                this.fire_in_progress = false
+            })
+        }
+    }
+  /**
+     * Called when the player attempts to fire a bomb vertically.
+     * @param {number} column_index
+     */
+    async on_bomb_fired(column_index) {
+        if ( this.player_is_firing_missiles && !this.fire_in_progress ) {
+            this.player_is_firing_missiles = false
+            this.fire_in_progress = true
+
+            this.$nextTick(async () => {
+                await GameSounds.Fire.play()
+                const success = game_service.attempt_bomb_fire([column_index])
+
+                if ( success ) await GameSounds.Hit.play()
+                else await GameSounds.Miss.play()
+
+                game_service.advance_game_state()
+                this.fire_in_progress = false
+            })
+        }
+    }
+
+    /**
+     * Called when the player attempts to fire a bomb horizontally.
+     * @param {number} column_index
+     */
+    async on_horiz_bomb_fired(row_index) {
+        if ( this.player_is_firing_missiles && !this.fire_in_progress ) {
+            this.player_is_firing_missiles = false
+            this.fire_in_progress = true
+
+            this.$nextTick(async () => {
+                await GameSounds.Fire.play()
+                const success = game_service.attempt_horiz_bomb_fire([row_index])
 
                 if ( success ) await GameSounds.Hit.play()
                 else await GameSounds.Miss.play()

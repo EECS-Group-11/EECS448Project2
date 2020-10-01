@@ -19,6 +19,8 @@ export class GameStateService {
      */
     player_x_ships = {}
 
+    player_1_bombs = 1;
+    player_2_bombs = 1;
     /**
      * An array of all players. This is mostly for internal purposes.
      * @private
@@ -92,6 +94,50 @@ export class GameStateService {
     }
 
     /**
+     * Returns the number of remaining bombs a player 1
+     * For use inside Scoreboard.component
+     * @return {number}
+     */
+    get_player1_bombs(){
+        return this.player_1_bombs
+    }
+
+    /**
+     * Returns the number of remaining bombs a player 2
+     * For use inside Scoreboard.component
+     * @return {number}
+     */
+    get_player2_bombs(){
+        return this.player_2_bombs
+    }
+
+    /**
+     * Returns the number of remaining bombs a player has
+     * For use inside GameBoard.component
+     * @return {number}
+     */
+    get_player_bombs(){
+        if(this.current_player === Player.One){
+            return this.player_1_bombs
+        }else{
+            return this.player_2_bombs
+        }
+    }
+
+    /**
+     * Removes availible bombs from a player
+     * @return none
+     */
+    set_player_bombs(){
+        if(this.current_player === Player.One){
+            this.player_1_bombs = 0
+        }else{
+            this.player_2_bombs = 0
+        }
+        
+    }
+
+    /**
      * The current state of the game.
      * @private
      * @type {string}
@@ -139,6 +185,7 @@ export class GameStateService {
         for ( const player of this.players ) {
             this.player_x_game_board[player] = this._build_empty_board()
             this.player_x_ships[player] = []
+            this.player_x_bombs = 1;
         }
     }
 
@@ -412,6 +459,81 @@ export class GameStateService {
         }
 
         this._trigger_view_update()
+        return false
+    }
+    /**
+     * Attempt to fire a bomb at the current opponent at the given column.
+     * The coordinates should be an integer of column_index where the bomb should fire.
+     * Bombs hit every grid cell in the given column
+     * @example
+     * If I want to fire a bomb at column 7, then:
+     * game_service.attempt_bomb_fire(7)
+     *
+     * @param {number} coords
+     * @return {boolean}
+     */
+    attempt_bomb_fire(target_col_i) {
+        if ( this.current_turn_had_missile_attempt ) {
+            throw new InvalidMissileFireAttemptError('Cannot fire more than once per turn.')
+        } else {
+            this.current_turn_had_missile_attempt = true
+        }
+        this.set_player_bombs()
+        for(var i = 0; i< 9; i++){
+        var target_cell = this._get_cell_state(this.current_opponent, i, target_col_i)
+
+        if ( target_cell.render === GridCellState.Ship ) {
+            // We hit an un-hit ship cell!
+            this._set_cell_state(this.current_opponent, i, target_col_i, GridCellState.Damaged)
+
+            // set ships to sunk where appropriate
+            this._sink_damaged_ships(this.current_opponent)
+            this._trigger_view_update()
+        } else if ( target_cell.render === GridCellState.Available ) {
+            // We missed...
+            this._set_cell_state(this.current_opponent, i, target_col_i, GridCellState.Missed)
+        }
+        
+        this._trigger_view_update()
+        }
+        return false
+    }
+
+    /**
+     * Attempt to fire a bomb horizontally at the current opponent at the given the row.
+     * The coordinates should be an integer of row_index where the bomb should fire.
+     * Bombs hit every grid cell in the given row
+     * @example
+     * If I want to fire a bomb at column 7, then:
+     * game_service.attempt_horiz_bomb_fire(7)
+     *
+     * @param {number} coords
+     * @return {boolean}
+     */
+    attempt_horiz_bomb_fire(target_row_i) {
+        if ( this.current_turn_had_missile_attempt ) {
+            throw new InvalidMissileFireAttemptError('Cannot fire more than once per turn.')
+        } else {
+            this.current_turn_had_missile_attempt = true
+        }
+        this.set_player_bombs()
+        for(var i = 0; i< 9; i++){
+            var target_cell = this._get_cell_state(this.current_opponent, target_row_i , i)
+
+            if ( target_cell.render === GridCellState.Ship ) {
+                // We hit an un-hit ship cell!
+                this._set_cell_state(this.current_opponent, target_row_i, i, GridCellState.Damaged)
+
+                // set ships to sunk where appropriate
+                this._sink_damaged_ships(this.current_opponent)
+                this._trigger_view_update()
+            } else if ( target_cell.render === GridCellState.Available ) {
+                // We missed...
+                this._set_cell_state(this.current_opponent, target_row_i, i, GridCellState.Missed)
+            }
+        
+            this._trigger_view_update()
+        }
         return false
     }
 
