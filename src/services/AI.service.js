@@ -1,6 +1,7 @@
 import game_service from './GameState.service.js'
 import {AIDifficulty as AID, GridCellState} from '../module/util.js'
 
+
 class AI {
 
 	difficulty = AID.Easy
@@ -9,8 +10,34 @@ class AI {
 	}
 
 	//rng based game board setup function
-	generateBoats() {
+	generateBoats(placement) {
 		console.log("generate boats")
+		let xPlaceCoord = 0
+		let yPlaceCoord = 0
+		let placeShipType = ""
+		const opponent = game_service.player_x_game_board[game_service.players[0]]
+		for(let i = 0; i <= (game_service.get_n_boats()-1); i++){
+			//Works for 1x1 but has weird errors on anything more, need number of ships, 
+			//need to figure out 'render' error, doesn't move on after more than one placed might be onShipPlaced in toplevel
+			placeShipType = `1x${i+1}`
+			console.log("placing ship" + placeShipType)
+			attemptPlace: try {
+				xPlaceCoord = (Math.floor(Math.random() * Math.floor(9)))+1
+				yPlaceCoord = (Math.floor(Math.random() * Math.floor(9)))+1
+				if(Math.random() == 0){
+					game_service.place_ship(placeShipType, [yPlaceCoord, xPlaceCoord], [yPlaceCoord, xPlaceCoord+i])
+				}
+				else{
+					game_service.place_ship(placeShipType, [yPlaceCoord, xPlaceCoord], [yPlaceCoord+i, xPlaceCoord])
+				}
+				break attemptPlace;
+			} catch (e) {
+				console.log(e)
+			}
+			console.log("ship " + (i+1) + " placed")
+			placement()
+		}
+		
 	}
 
 	//guess logic function, returns coordinates? I think
