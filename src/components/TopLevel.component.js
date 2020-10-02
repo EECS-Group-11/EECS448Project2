@@ -256,6 +256,7 @@ class TopLevelComponent extends Component {
                 } catch (e) {
                   await GameSounds.Miss.play()
                   this.fire_in_progress = false
+                  this.player_is_firing_missiles = true
                   return;
                 }
                 if ( success ) await GameSounds.Hit.play()
