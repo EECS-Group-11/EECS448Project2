@@ -192,7 +192,7 @@ class TopLevelComponent extends Component {
      */
     async vue_on_create() {
         this.current_state = game_service.get_game_state()
-
+        game_service.confirm_player_change = this.confirm_player_change
         // Called every time the game state is updated
         game_service.on_state_change( async (next_state, was_refresh) => {
             this.current_state = next_state
@@ -250,8 +250,14 @@ class TopLevelComponent extends Component {
 
             this.$nextTick(async () => {
                 await GameSounds.Fire.play()
-                const success = game_service.attempt_missile_fire([row_index, column_index])
-
+                let success;
+                try {
+                  success = game_service.attempt_missile_fire([row_index, column_index])
+                } catch (e) {
+                  await GameSounds.Miss.play()
+                  this.fire_in_progress = false
+                  return;
+                }
                 if ( success ) await GameSounds.Hit.play()
                 else await GameSounds.Miss.play()
 
@@ -265,16 +271,21 @@ class TopLevelComponent extends Component {
      * Called when the player has confirmed the player change.
      */
     confirm_player_change() {
+      if (!game_service.has_ai) {
         game_service.advance_game_state()
-        if (game_service.has_ai && game_service.get_current_player() === game_service.players[1]) {
+      }
+      else {
+        if (game_service.get_current_player() === game_service.players[1]) {
           if (this.player_is_placing_ships) {
+            this.ships_to_place = game_service.get_possible_boats();
             this.ai.generateBoats(this.on_ship_placed);
-            //() //uncomment once generateBoats works
           }
           else if (this.player_is_firing_missiles) {
+            this.fire_in_progress = false;
             this.on_missile_fired(this.ai.fireLocation())
           }
         }
+      }
     }
 }
 

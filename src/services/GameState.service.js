@@ -132,8 +132,17 @@ export class GameStateService {
      */
     game_state_change_listeners = []
 
-    /**yo broh its the ai thing*/
+    /**
+     * Determines if there's an AI playing or not
+     * @type {boolean}
+     */
     has_ai = true
+
+    /**
+     * Used as a bridge to TopLevel to use its functions for AI player
+     * @type {function}
+     */
+    confirm_player_change = null
 
     /**
      * Construct a new game service. Initialize any internal states.
@@ -178,6 +187,7 @@ export class GameStateService {
     get_current_player_state() {
         // The player can see everything about their own board, so just return it.
         // Return a deep-copy, so internal state can't be modified.
+        if (this.has_ai) return clone(this.player_x_game_board[Player.One]);
         return clone(this.player_x_game_board[this.current_player])
     }
 
@@ -189,7 +199,9 @@ export class GameStateService {
      */
     get_current_opponent_state() {
         // Return a deep-copy, so internal state can't be modified.
-        const state = clone(this.player_x_game_board[this.current_opponent])
+        let state;
+        if (this.has_ai) state = clone(this.player_x_game_board[Player.Two])
+        else state = clone(this.player_x_game_board[this.current_opponent])
         const hidden_states = [
             GridCellState.Disabled,
             GridCellState.Ship,
@@ -293,10 +305,16 @@ export class GameStateService {
          */
         if (this.current_state === GameState.ChoosingNumberOfShips) {
             if (this.n_boats >= 1 && this.n_boats <= 5) {
+              if (!this.has_ai) {
                 this.current_state = GameState.PromptPlayerChange;
                 this.post_player_change_state = GameState.PlayerSetup;
                 this.current_player = Player.One;
                 this.current_opponent = Player.Two;
+              } else {
+                this.current_state = GameState.PlayerSetup;
+                this.current_player = Player.One;
+                this.current_opponent = Player.Two;
+              }
             } else {
                 throw new InvalidAdvanceStateError("Invalid Number of Boats");
             }
@@ -306,10 +324,17 @@ export class GameStateService {
                 // because the place_ship handles all the validation
                 // all you need to do is make sure they have placed all the appropriate ships
                 if ( this.get_ship_entities(this.current_player).length === this.n_boats ) {
+                  if (!this.has_ai) {
                     this.current_state = GameState.PromptPlayerChange;
                     this.post_player_change_state = GameState.PlayerSetup;
                     this.current_player = Player.Two;
                     this.current_opponent = Player.One;
+                  } else {
+                    this.current_state = GameState.PlayerSetup;
+                    this.current_player = Player.Two;
+                    this.current_opponent = Player.One;
+                    this.confirm_player_change()
+                  }
                 }
                 else{
                     throw new InvalidAdvanceStateError("Player One has a problem with the number of boats selected");
@@ -317,10 +342,17 @@ export class GameStateService {
             }
             else if (this.current_player === Player.Two) {
                 if ( this.get_ship_entities(this.current_player).length === this.n_boats ) {
+                  if (!this.has_ai) {
                     this.current_state = GameState.PromptPlayerChange;
                     this.post_player_change_state = GameState.PlayerTurn;
                     this.current_player = Player.One;
                     this.current_opponent = Player.Two;
+                  } else {
+                    this.current_state = GameState.PlayerTurn;
+                    this.current_player = Player.One;
+                    this.current_opponent = Player.Two;
+                    this.confirm_player_change()
+                  }
                 }
                 else{
                     throw new InvalidAdvanceStateError("Player Two has a problem with the number of boats selected");
@@ -329,14 +361,17 @@ export class GameStateService {
         }
         else if (this.current_state === GameState.PlayerTurn && this.current_player === Player.One) {
             if (this.current_turn_had_missile_attempt === true) {
-              //if (!this.has_ai) {
+              if (!this.has_ai) {
                 this.current_state = GameState.PromptPlayerChange;
                 this.post_player_change_state = GameState.PlayerTurn;
                 this.current_player = Player.Two;
                 this.current_opponent = Player.One;
-              //} else {
-
-              //}
+              } else {
+                this.current_state = GameState.PlayerTurn;
+                this.current_player = Player.Two;
+                this.current_opponent = Player.One;
+                this.confirm_player_change();
+              }
             }
             else {
                 throw new InvalidAdvanceStateError("the player has not fired a missle");
@@ -344,10 +379,17 @@ export class GameStateService {
         }
         else if (this.current_state === GameState.PlayerTurn && this.current_player === Player.Two) {
             if (this.current_turn_had_missile_attempt === true) {
+              if (!this.has_ai) {
                 this.current_state = GameState.PromptPlayerChange;
                 this.post_player_change_state = GameState.PlayerTurn;
                 this.current_player = Player.One;
                 this.current_opponent = Player.Two;
+              } else {
+                this.current_state = GameState.PlayerTurn;
+                this.current_player = Player.One;
+                this.current_opponent = Player.Two;
+                this.confirm_player_change();
+              }
             }
             else {
                 throw new InvalidAdvanceStateError("the player has not fired a missle");
@@ -405,7 +447,6 @@ export class GameStateService {
             this.current_turn_had_missile_attempt = false
             throw new InvalidMissileFireAttemptError('Cannot fire on cell with state: ' + target_cell.render)
         }
-
         if ( target_cell.render === GridCellState.Ship ) {
             // We hit an un-hit ship cell!
             this._set_cell_state(this.current_opponent, target_row_i, target_col_i, GridCellState.Damaged)
@@ -462,10 +503,8 @@ export class GameStateService {
     place_ship(ship_type, coords_one, coords_two) {
         // make sure the coordinates are valid for the given ship type
         this.validate_coordinates(ship_type, coords_one, coords_two)
-
         // get the ships for the current player
         const player_ships = this.get_ship_entities(this.current_player)
-
         // make sure they don't already have this ship type
         const have_ship_type = player_ships.some(ship => ship.ship_type === ship_type)
         if ( have_ship_type )
