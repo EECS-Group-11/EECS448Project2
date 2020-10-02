@@ -79,6 +79,11 @@ export const Player = {
  * @type {object}
  */
 export const GameState = {
+
+	ChoosingAIDifficulty: 'choosing_ai_difficulty',
+
+	ChoosingGameMode: 'choosing_game_mode',
+
     // Both players are choosing the number of ships to play with (1-5)
     ChoosingNumberOfShips: 'choosing_number_of_ships',
 

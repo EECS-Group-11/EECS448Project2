@@ -9,10 +9,52 @@ import theAI from '../services/AI.service.js'
 
 const template = `
 <div class="top-level-container">
-    <div class="top-level-component">
+	<div class="top-level-component">
+		<!-- Choose the game mode -->
+		<div v-if="current_state === GameState.ChoosingGameMode" class="game-choose-ships-container">
+			<span v-if="instructions"><h1 class="instructions">{{ instructions }}</h1></span>
+			<div class="btn_container">
+                <div class="buttonTest" id="buttonOption2">
+                    <button @click="game_mode(1)" id="dub-arrow"><img src="https://github.com/atloomer/atloomer.github.io/blob/master/img/iconmonstr-arrow-48-240.png?raw=true" alt="" />
+                    </button>
+                    <a href="#">PVP</a>
+                </div>
+                <div class="buttonTest" id="buttonOption2">
+                    <button @click="game_mode(2)" id="dub-arrow"><img src="https://github.com/atloomer/atloomer.github.io/blob/master/img/iconmonstr-arrow-48-240.png?raw=true" alt="" />
+                    </button>
+                    <a href="#">PVE</a>
+                </div>
+            </div>
+		</div>
+		<div v-if="current_state === GameState.ChoosingAIDifficulty" class="game-choose-ships-container">
+			<span v-if="instructions"><h1 class="instructions">{{ instructions }}</h1></span>
+			<div class="btn_container">
+                <div class="buttonTest" id="buttonOption2">
+                    <button @click="difficulty(1)" id="dub-arrow"><img src="https://github.com/atloomer/atloomer.github.io/blob/master/img/iconmonstr-arrow-48-240.png?raw=true" alt="" />
+                    </button>
+                    <a href="#">easv</a>
+                </div>
+                <div class="buttonTest" id="buttonOption2">
+                    <button @click="difficulty(2)" id="dub-arrow"><img src="https://github.com/atloomer/atloomer.github.io/blob/master/img/iconmonstr-arrow-48-240.png?raw=true" alt="" />
+                    </button>
+                    <a href="#">medium</a>
+				</div>
+				<div class="buttonTest" id="buttonOption2">
+                    <button @click="difficulty(3)" id="dub-arrow"><img src="https://github.com/atloomer/atloomer.github.io/blob/master/img/iconmonstr-arrow-48-240.png?raw=true" alt="" />
+                    </button>
+                    <a href="#">hard</a>
+                </div>
+            </div>
+		</div>
+		<!-- Select AI difficulty -->
         <div v-if="current_state === GameState.ChoosingNumberOfShips" class="game-choose-ships-container">
             <span v-if="instructions"><h1 class="instructions">{{ instructions }}</h1></span>
             <div class="btn_container">
+<!--                <button @click="ship(1)" class="btn btn1">1 ship</button>
+                <button @click="ship(2)" class="btn btn2">2 ships</button>
+                <button @click="ship(3)" class="btn btn3">3 ships</button>
+                <button @click="ship(4)" class="btn btn4">4 ships</button>
+                <button @click="ship(5)" class="buttonTest">5 ships</button>-->
                 <div class="buttonTest" id="buttonOption2">
                     <button @click="ship(1)" id="dub-arrow"><img src="https://github.com/atloomer/atloomer.github.io/blob/master/img/iconmonstr-arrow-48-240.png?raw=true" alt="" />
                     </button>
@@ -42,6 +84,7 @@ const template = `
         </div>
         <div v-if="current_state === GameState.PromptPlayerChange" class="game-player-change-container">
             it is now {{ current_player_display }}'s turn!
+<!--            <button @click="confirm_player_change" class="playerBtn">continue</button>-->
             <div class="buttonTest" id="buttonOption2">
                     <button @click="confirm_player_change" id="dub-arrow"><img src="https://github.com/atloomer/atloomer.github.io/blob/master/img/iconmonstr-arrow-48-240.png?raw=true" alt="" />
                     </button>
@@ -49,7 +92,9 @@ const template = `
             </div>
         </div>
         <div
-            v-if="current_state !== GameState.ChoosingNumberOfShips && current_state !== GameState.PromptPlayerChange && instructions"
+			v-if="current_state !== GameState.ChoosingNumberOfShips && current_state !== GameState.PromptPlayerChange 
+			&& current_state !== GameState.ChoosingGameMode
+			&& current_state !== GameState.ChoosingAIDifficulty && instructions"
             class="instructions"
         >
             {{ instructions.replace('{player}', current_player_display) }}
@@ -57,7 +102,9 @@ const template = `
         <div
             v-if="current_state !== GameState.ChoosingNumberOfShips
                     && current_state !== GameState.PromptPlayerChange
-                    && current_state !== GameState.PlayerVictory"
+					&& current_state !== GameState.PlayerVictory
+					&& current_state !== GameState.ChoosingGameMode
+					&& current_state !== GameState.ChoosingAIDifficulty"
             class="game-boards-container"
         >
             <!-- Opponent's board -->
@@ -69,7 +116,7 @@ const template = `
                 ></app-game-board>
                 <div class="fleet-label">Opposing fleet</div>
             </div>
-
+    
             <!-- Player's board -->
             <div class="game-board">
                 <app-game-board
@@ -95,7 +142,7 @@ const template = `
                 ></app-game-board>
                 <div class="fleet-label">{{ current_player_display }}'s fleet (winner)</div>
             </div>
-
+    
             <!-- Loser's board -->
             <div class="game-board">
                 <app-game-board
@@ -148,7 +195,8 @@ class TopLevelComponent extends Component {
      * The current instructions to be shown to the user.
      * @type {string}
      */
-    instructions = instructions[GameState.ChoosingNumberOfShips]
+	// instructions = instructions[GameState.ChoosingNumberOfShips]
+	instructions = instructions[GameState.ChoosingGameMode]
 
     /**
      * True if the player should be able to place their ships.
@@ -218,6 +266,24 @@ class TopLevelComponent extends Component {
         })
     }
 
+	/**
+	 * set AI difficulty.
+	 * @param {number} n
+	 */
+	difficulty(n){
+		game_service.set_ai_difficulty(n);
+		this.on_state_change();
+	}
+
+	/**
+	 * Select game mode.
+	 * @param {number} n
+	 */
+	async game_mode(n){
+		game_service.set_game_mode(n);
+		this.on_state_change();
+	}
+
     /**
      * Set the number of boats.
      * @param {number} n
@@ -230,9 +296,9 @@ class TopLevelComponent extends Component {
     /**
      * Called when the current user has placed a ship.
      */
-    on_ship_placed() {
-        this.ships_to_place.shift()
-        if ( this.ships_to_place.length < 1 ) {
+	on_ship_placed() {
+		this.ships_to_place.shift()
+		if (this.ships_to_place.length < 1) {
             // We've placed all the ships. Let's move on.
             game_service.advance_game_state()
         }
@@ -244,13 +310,13 @@ class TopLevelComponent extends Component {
      * @param {number} column_index
      */
     async on_missile_fired([row_index, column_index]) {
-        if ( this.player_is_firing_missiles && !this.fire_in_progress ) {
+		if (this.player_is_firing_missiles && !this.fire_in_progress) {
             this.player_is_firing_missiles = false
             this.fire_in_progress = true
 
             this.$nextTick(async () => {
                 await GameSounds.Fire.play()
-                let success;
+				let success;
                 try {
                   success = game_service.attempt_missile_fire([row_index, column_index])
                 } catch (e) {
@@ -259,7 +325,7 @@ class TopLevelComponent extends Component {
                   this.player_is_firing_missiles = true
                   return;
                 }
-                if ( success ) await GameSounds.Hit.play()
+				if (success) await GameSounds.Hit.play()
                 else await GameSounds.Miss.play()
 
                 game_service.advance_game_state()
@@ -274,7 +340,7 @@ class TopLevelComponent extends Component {
     confirm_player_change() {
       if (!game_service.has_ai) {
         game_service.advance_game_state()
-      }
+    }
       else {
         if (game_service.get_current_player() === game_service.players[1]) {
           if (this.player_is_placing_ships) {
