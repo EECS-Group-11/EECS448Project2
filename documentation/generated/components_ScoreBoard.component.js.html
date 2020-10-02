@@ -34,23 +34,25 @@ const template = `
 &lt;div class="app-scoreboard-component">
     &lt;table class="scoreboard_table" style="width:50%">
         &lt;tr class="scoreboard_rows">
-            &lt;th class="scoreboard_table_empty">&lt;/th>
-            &lt;th class="scoreboard_table_header" colspan="3">scoreboard&lt;/th>
+            &lt;th class="scoreboard_table_header" colspan="4">scoreboard&lt;/th>            
         &lt;/tr>
-        &lt;tr class="scoreboard_header_scoreProgress">
-            &lt;th class="scoreboard_table_empty">&lt;/th>
+        &lt;tr class="scoreboard_header_playerScoreProgress">
+            &lt;td class="scoreboard_data">player&lt;/td>
             &lt;td class="scoreboard_data">score&lt;/td>
             &lt;td class="scoreboard_data">progress&lt;/td>
+            &lt;td class="scoreboard_data">remaining bombs&lt;/td>
         &lt;/tr>
         &lt;tr class="scoreboard_rows_score&amp;progress">
-            &lt;td class="scoreboard_player">{{ current_player === Player.One ? '➜ ' : '' }}Player 1{{ winning_player === Player.One ? ' ★' : '' }}&lt;/td>
-            &lt;td class="scoreboard_data">{{player_one_score}}&lt;/td>
-            &lt;td class="scoreboard_data">{{player_one_progress * 100}}%&lt;/td>
+            &lt;td class="scoreboard_player">{{ current_player === Player.One ? '➜' : '' }}player_1{{ winning_player === Player.One ? ' ★' : '' }}&lt;/td>
+            &lt;td class="scoreboard_data_value">{{player_one_score}}&lt;/td>
+            &lt;td class="scoreboard_data_value">{{player_one_progress * 100}}%&lt;/td>
+            &lt;td class="scoreboard_data_value">{{player_one_bombs}}&lt;/td>
         &lt;/tr>
         &lt;tr class="scoreboard_lastRow">
-            &lt;td class="scoreboard_player">{{ current_player === Player.Two ? '➜ ' : '' }}Player 2{{ winning_player === Player.Two ? ' ★' : '' }}&lt;/td>
-            &lt;td class="scoreboard_data">{{player_two_score}}&lt;/td>
-            &lt;td class="scoreboard_data">{{player_two_progress * 100}}%&lt;/td>
+            &lt;td class="scoreboard_player">{{ current_player === Player.Two ? '➜' : '' }}player_2{{ winning_player === Player.Two ? ' ★' : '' }}&lt;/td>
+            &lt;td class="scoreboard_data_value">{{player_two_score}}&lt;/td>
+            &lt;td class="scoreboard_data_value">{{player_two_progress * 100}}%&lt;/td>
+            &lt;td class="scoreboard_data_value">{{player_two_bombs}}&lt;/td>
         &lt;/tr>
     &lt;/table>
 &lt;/div>
@@ -90,6 +92,18 @@ class ScoreBoardComponent extends Component {
     player_two_progress = 0
 
     /**
+     * The number of bombs for player 1.
+     * @type {number}
+     */
+    player_one_bombs = 1
+
+    /**
+     * The number of bombs for player 2.
+     * @type {number}
+     */
+    player_two_bombs = 1
+
+    /**
      * The current player.
      * @type {string|undefined}
      */
@@ -124,6 +138,9 @@ class ScoreBoardComponent extends Component {
         this.player_two_score = game_service.get_player_score(Player.Two)
         this.player_one_progress = game_service.get_progress(Player.One)
         this.player_two_progress = game_service.get_progress(Player.Two)
+        this.player_one_bombs = game_service.get_player1_bombs()
+        this.player_two_bombs = game_service.get_player2_bombs()
+
 
         if ( game_service.get_game_state() !== GameState.PlayerVictory )
             this.current_player = game_service.get_current_player()
@@ -145,13 +162,13 @@ export default ScoreBoardComponent
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-errors.html">errors</a></li><li><a href="module-lang.html">lang</a></li><li><a href="module-sounds.html">sounds</a></li><li><a href="module-util.html">util</a></li></ul><h3>Classes</h3><ul><li><a href="GameBoardComponent.html">GameBoardComponent</a></li><li><a href="GameStateService.html">GameStateService</a></li><li><a href="GridCellComponent.html">GridCellComponent</a></li><li><a href="module-errors.InvalidAdvanceStateError.html">InvalidAdvanceStateError</a></li><li><a href="module-errors.InvalidMissileFireAttemptError.html">InvalidMissileFireAttemptError</a></li><li><a href="module-errors.InvalidShipPlacementError.html">InvalidShipPlacementError</a></li><li><a href="module-sounds-Sound.html">Sound</a></li><li><a href="ScoreBoardComponent.html">ScoreBoardComponent</a></li><li><a href="TopLevelComponent.html">TopLevelComponent</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-errors.html">errors</a></li><li><a href="module-lang.html">lang</a></li><li><a href="module-sounds.html">sounds</a></li><li><a href="module-util.html">util</a></li></ul><h3>Classes</h3><ul><li><a href="AI.html">AI</a></li><li><a href="GameBoardComponent.html">GameBoardComponent</a></li><li><a href="GameStateService.html">GameStateService</a></li><li><a href="GridCellComponent.html">GridCellComponent</a></li><li><a href="module-errors.InvalidAdvanceStateError.html">InvalidAdvanceStateError</a></li><li><a href="module-errors.InvalidMissileFireAttemptError.html">InvalidMissileFireAttemptError</a></li><li><a href="module-errors.InvalidShipPlacementError.html">InvalidShipPlacementError</a></li><li><a href="module-sounds-Sound.html">Sound</a></li><li><a href="ScoreBoardComponent.html">ScoreBoardComponent</a></li><li><a href="TopLevelComponent.html">TopLevelComponent</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.5</a> on Sat Sep 12 2020 16:40:09 GMT-0500 (Central Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.5</a> on Fri Oct 02 2020 15:18:37 GMT-0500 (Central Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

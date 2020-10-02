@@ -2,12 +2,15 @@ import game_service from './GameState.service.js'
 import {AIDifficulty as AID, GridCellState, isValidTargetCell} from '../module/util.js'
 
 
+/**
+ * AI service for playing against computer.
+ */
 class AI {
 
 	/**
 	 * It's the AI Difficulty
 	 * @private
-	 * @type = {string}
+	 * @type {string}
 	 */
 	difficulty = AID.Easy
 

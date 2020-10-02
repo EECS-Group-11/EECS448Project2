@@ -32,25 +32,97 @@ import {instructions} from '../module/lang.js'
 import game_service from '../services/GameState.service.js'
 import {GameSounds} from '../module/sounds.js'
 
+//creating a button to test ai functionality
+import theAI from '../services/AI.service.js'
+
 const template = `
 &lt;div class="top-level-container">
-    &lt;div class="top-level-component">
+	&lt;div class="top-level-component">
+		&lt;!-- Choose the game mode -->
+		&lt;div v-if="current_state === GameState.ChoosingGameMode" class="game-choose-ships-container">
+			&lt;span v-if="instructions">&lt;h1 class="instructions">{{ instructions }}&lt;/h1>&lt;/span>
+			&lt;div class="btn_container">
+                &lt;div class="buttonTest" id="buttonOption2">
+                    &lt;button @click="game_mode(1)" id="dub-arrow">&lt;img src="https://github.com/atloomer/atloomer.github.io/blob/master/img/iconmonstr-arrow-48-240.png?raw=true" alt="" />
+                    &lt;/button>
+                    &lt;a href="#">PVP&lt;/a>
+                &lt;/div>
+                &lt;div class="buttonTest" id="buttonOption2">
+                    &lt;button @click="game_mode(2)" id="dub-arrow">&lt;img src="https://github.com/atloomer/atloomer.github.io/blob/master/img/iconmonstr-arrow-48-240.png?raw=true" alt="" />
+                    &lt;/button>
+                    &lt;a href="#">PVE&lt;/a>
+                &lt;/div>
+            &lt;/div>
+		&lt;/div>
+		&lt;div v-if="current_state === GameState.ChoosingAIDifficulty" class="game-choose-ships-container">
+			&lt;span v-if="instructions">&lt;h1 class="instructions">{{ instructions }}&lt;/h1>&lt;/span>
+			&lt;div class="btn_container">
+                &lt;div class="buttonTest" id="buttonOption2">
+                    &lt;button @click="difficulty(1)" id="dub-arrow">&lt;img src="https://github.com/atloomer/atloomer.github.io/blob/master/img/iconmonstr-arrow-48-240.png?raw=true" alt="" />
+                    &lt;/button>
+                    &lt;a href="#">easv&lt;/a>
+                &lt;/div>
+                &lt;div class="buttonTest" id="buttonOption2">
+                    &lt;button @click="difficulty(2)" id="dub-arrow">&lt;img src="https://github.com/atloomer/atloomer.github.io/blob/master/img/iconmonstr-arrow-48-240.png?raw=true" alt="" />
+                    &lt;/button>
+                    &lt;a href="#">medium&lt;/a>
+				&lt;/div>
+				&lt;div class="buttonTest" id="buttonOption2">
+                    &lt;button @click="difficulty(3)" id="dub-arrow">&lt;img src="https://github.com/atloomer/atloomer.github.io/blob/master/img/iconmonstr-arrow-48-240.png?raw=true" alt="" />
+                    &lt;/button>
+                    &lt;a href="#">hard&lt;/a>
+                &lt;/div>
+            &lt;/div>
+		&lt;/div>
+		&lt;!-- Select AI difficulty -->
         &lt;div v-if="current_state === GameState.ChoosingNumberOfShips" class="game-choose-ships-container">
-            &lt;span v-if="instructions">{{ instructions }}&lt;/span>
-            &lt;div style="margin-top: 30px;">
-                &lt;button @click="ship(1)" class="shipBtn">1 ship&lt;/button>
-                &lt;button @click="ship(2)" class="shipBtn">2 ships&lt;/button>
-                &lt;button @click="ship(3)" class="shipBtn">3 ships&lt;/button>
-                &lt;button @click="ship(4)" class="shipBtn">4 ships&lt;/button>
-                &lt;button @click="ship(5)" class="shipBtn">5 ships&lt;/button>
+            &lt;span v-if="instructions">&lt;h1 class="instructions">{{ instructions }}&lt;/h1>&lt;/span>
+            &lt;div class="btn_container">
+&lt;!--                &lt;button @click="ship(1)" class="btn btn1">1 ship&lt;/button>
+                &lt;button @click="ship(2)" class="btn btn2">2 ships&lt;/button>
+                &lt;button @click="ship(3)" class="btn btn3">3 ships&lt;/button>
+                &lt;button @click="ship(4)" class="btn btn4">4 ships&lt;/button>
+                &lt;button @click="ship(5)" class="buttonTest">5 ships&lt;/button>-->
+                &lt;div class="buttonTest" id="buttonOption2">
+                    &lt;button @click="ship(1)" id="dub-arrow">&lt;img src="https://github.com/atloomer/atloomer.github.io/blob/master/img/iconmonstr-arrow-48-240.png?raw=true" alt="" />
+                    &lt;/button>
+                    &lt;a href="#"> 1 ship&lt;/a>
+                &lt;/div>
+                &lt;div class="buttonTest" id="buttonOption2">
+                    &lt;button @click="ship(2)" id="dub-arrow">&lt;img src="https://github.com/atloomer/atloomer.github.io/blob/master/img/iconmonstr-arrow-48-240.png?raw=true" alt="" />
+                    &lt;/button>
+                    &lt;a href="#"> 2 ships&lt;/a>
+                &lt;/div>
+                &lt;div class="buttonTest" id="buttonOption2">
+                    &lt;button @click="ship(3)" id="dub-arrow">&lt;img src="https://github.com/atloomer/atloomer.github.io/blob/master/img/iconmonstr-arrow-48-240.png?raw=true" alt="" />
+                    &lt;/button>
+                    &lt;a href="#"> 3 ships&lt;/a>
+                &lt;/div>
+                &lt;div class="buttonTest" id="buttonOption2">
+                    &lt;button @click="ship(4)" id="dub-arrow">&lt;img src="https://github.com/atloomer/atloomer.github.io/blob/master/img/iconmonstr-arrow-48-240.png?raw=true" alt="" />
+                    &lt;/button>
+                    &lt;a href="#"> 4 ships&lt;/a>
+                &lt;/div>
+                &lt;div class="buttonTest" id="buttonOption2">
+                    &lt;button @click="ship(5)" id="dub-arrow">&lt;img src="https://github.com/atloomer/atloomer.github.io/blob/master/img/iconmonstr-arrow-48-240.png?raw=true" alt="" />
+                    &lt;/button>
+                    &lt;a href="#"> 5 ships&lt;/a>
+                &lt;/div>
             &lt;/div>
         &lt;/div>
         &lt;div v-if="current_state === GameState.PromptPlayerChange" class="game-player-change-container">
-            It is now {{ current_player_display }}'s turn!
-            &lt;button @click="confirm_player_change" class="playerBtn">Continue&lt;/button>
+            it is now {{ current_player_display }}'s turn!
+&lt;!--            &lt;button @click="confirm_player_change" class="playerBtn">continue&lt;/button>-->
+            &lt;div class="buttonTest" id="buttonOption2">
+                    &lt;button @click="confirm_player_change" id="dub-arrow">&lt;img src="https://github.com/atloomer/atloomer.github.io/blob/master/img/iconmonstr-arrow-48-240.png?raw=true" alt="" />
+                    &lt;/button>
+                    &lt;a href="#">continue&lt;/a>
+            &lt;/div>
         &lt;/div>
         &lt;div
-            v-if="current_state !== GameState.ChoosingNumberOfShips &amp;&amp; current_state !== GameState.PromptPlayerChange &amp;&amp; instructions"
+			v-if="current_state !== GameState.ChoosingNumberOfShips &amp;&amp; current_state !== GameState.PromptPlayerChange 
+			&amp;&amp; current_state !== GameState.ChoosingGameMode
+			&amp;&amp; current_state !== GameState.ChoosingAIDifficulty &amp;&amp; instructions"
             class="instructions"
         >
             {{ instructions.replace('{player}', current_player_display) }}
@@ -58,7 +130,9 @@ const template = `
         &lt;div
             v-if="current_state !== GameState.ChoosingNumberOfShips
                     &amp;&amp; current_state !== GameState.PromptPlayerChange
-                    &amp;&amp; current_state !== GameState.PlayerVictory"
+					&amp;&amp; current_state !== GameState.PlayerVictory
+					&amp;&amp; current_state !== GameState.ChoosingGameMode
+					&amp;&amp; current_state !== GameState.ChoosingAIDifficulty"
             class="game-boards-container"
         >
             &lt;!-- Opponent's board -->
@@ -67,6 +141,8 @@ const template = `
                     v-bind:rows="opponent_rows"
                     v-bind:is_missile_mode="player_is_firing_missiles"
                     @missilefired="on_missile_fired"
+                    @bombfired="on_bomb_fired"
+                    @horizbombfired="on_horiz_bomb_fired"
                 >&lt;/app-game-board>
                 &lt;div class="fleet-label">Opposing fleet&lt;/div>
             &lt;/div>
@@ -81,6 +157,9 @@ const template = `
                 >&lt;/app-game-board>
                 &lt;div class="fleet-label">Your fleet&lt;/div>
             &lt;/div>
+            &lt;div class="scoreboard-container">
+            &lt;app-scoreboard>&lt;/app-scoreboard>
+        &lt;/div>
         &lt;/div>
         &lt;div
             v-if="current_state === GameState.PlayerVictory"
@@ -103,9 +182,7 @@ const template = `
             &lt;/div>
         &lt;/div>
     &lt;/div>
-    &lt;div class="scoreboard-container">
-        &lt;app-scoreboard>&lt;/app-scoreboard>
-    &lt;/div>
+
 &lt;/div>
 `
 
@@ -117,6 +194,8 @@ class TopLevelComponent extends Component {
     static get selector() { return 'app-top-level' }
     static get template() { return template }
     static get props() { return [] }
+
+    ai = theAI
 
     /**
      * Make the game state accessible w/in the template.
@@ -146,7 +225,8 @@ class TopLevelComponent extends Component {
      * The current instructions to be shown to the user.
      * @type {string}
      */
-    instructions = instructions[GameState.ChoosingNumberOfShips]
+	// instructions = instructions[GameState.ChoosingNumberOfShips]
+	instructions = instructions[GameState.ChoosingGameMode]
 
     /**
      * True if the player should be able to place their ships.
@@ -159,6 +239,12 @@ class TopLevelComponent extends Component {
      * @type {boolean}
      */
     player_is_firing_missiles = false
+
+    /**
+     * True if there is a missile fire in progressm
+     * @type {boolean}
+     */
+    fire_in_progress = false
 
     /**
      * If in placement mode, the ships that are yet to be placed.
@@ -184,9 +270,9 @@ class TopLevelComponent extends Component {
      */
     async vue_on_create() {
         this.current_state = game_service.get_game_state()
-
+        game_service.confirm_player_change = this.confirm_player_change
         // Called every time the game state is updated
-        game_service.on_state_change((next_state, was_refresh) => {
+        game_service.on_state_change( async (next_state, was_refresh) => {
             this.current_state = next_state
             this.opponent_rows = game_service.get_current_opponent_state()
             this.player_rows = game_service.get_current_player_state()
@@ -200,6 +286,7 @@ class TopLevelComponent extends Component {
             }
 
             if ( next_state === GameState.PlayerVictory ) {
+                await GameSounds.Victory.play()
                 const [victor_state, loser_state] = game_service.get_player_victory_state()
                 this.player_rows = victor_state
                 this.opponent_rows = loser_state
@@ -208,6 +295,24 @@ class TopLevelComponent extends Component {
             this.instructions = instructions[this.current_state]
         })
     }
+
+	/**
+	 * set AI difficulty.
+	 * @param {number} n
+	 */
+	difficulty(n){
+		game_service.set_ai_difficulty(n);
+		game_service.advance_game_state();
+	}
+
+	/**
+	 * Select game mode.
+	 * @param {number} n
+	 */
+	async game_mode(n){
+		game_service.set_game_mode(n);
+		game_service.advance_game_state();
+	}
 
     /**
      * Set the number of boats.
@@ -221,9 +326,9 @@ class TopLevelComponent extends Component {
     /**
      * Called when the current user has placed a ship.
      */
-    on_ship_placed() {
-        this.ships_to_place.shift()
-        if ( this.ships_to_place.length &lt; 1 ) {
+	on_ship_placed() {
+		this.ships_to_place.shift()
+		if (this.ships_to_place.length &lt; 1) {
             // We've placed all the ships. Let's move on.
             game_service.advance_game_state()
         }
@@ -235,17 +340,70 @@ class TopLevelComponent extends Component {
      * @param {number} column_index
      */
     async on_missile_fired([row_index, column_index]) {
-        if ( this.player_is_firing_missiles ) {
-            await GameSounds.Fire.play()
-            const success = game_service.attempt_missile_fire([row_index, column_index])
+		if (this.player_is_firing_missiles &amp;&amp; !this.fire_in_progress) {
+            this.player_is_firing_missiles = false
+            this.fire_in_progress = true
 
-            if ( success ) await GameSounds.Hit.play()
-            else await GameSounds.Miss.play()
+            this.$nextTick(async () => {
+                await GameSounds.Fire.play()
+				let success;
+                try {
+                  success = game_service.attempt_missile_fire([row_index, column_index])
+                } catch (e) {
+                  await GameSounds.Miss.play()
+                  this.fire_in_progress = false
+                  this.player_is_firing_missiles = true
+                  return;
+                }
+				if (success) await GameSounds.Hit.play()
+                else await GameSounds.Miss.play()
 
-            // Give the user time to see whether they hit or not
-            setTimeout(() => {
                 game_service.advance_game_state()
-            }, 2000)
+                this.fire_in_progress = false
+            })
+        }
+    }
+  /**
+     * Called when the player attempts to fire a bomb vertically.
+     * @param {number} column_index
+     */
+    async on_bomb_fired(column_index) {
+        if ( this.player_is_firing_missiles &amp;&amp; !this.fire_in_progress ) {
+            this.player_is_firing_missiles = false
+            this.fire_in_progress = true
+
+            this.$nextTick(async () => {
+                await GameSounds.Fire.play()
+                const success = game_service.attempt_bomb_fire([column_index])
+
+                if ( success ) await GameSounds.Hit.play()
+                else await GameSounds.Miss.play()
+
+                game_service.advance_game_state()
+                this.fire_in_progress = false
+            })
+        }
+    }
+
+    /**
+     * Called when the player attempts to fire a bomb horizontally.
+     * @param {number} column_index
+     */
+    async on_horiz_bomb_fired(row_index) {
+        if ( this.player_is_firing_missiles &amp;&amp; !this.fire_in_progress ) {
+            this.player_is_firing_missiles = false
+            this.fire_in_progress = true
+
+            this.$nextTick(async () => {
+                await GameSounds.Fire.play()
+                const success = game_service.attempt_horiz_bomb_fire([row_index])
+
+                if ( success ) await GameSounds.Hit.play()
+                else await GameSounds.Miss.play()
+
+                game_service.advance_game_state()
+                this.fire_in_progress = false
+            })
         }
     }
 
@@ -253,7 +411,21 @@ class TopLevelComponent extends Component {
      * Called when the player has confirmed the player change.
      */
     confirm_player_change() {
+      if (!game_service.has_ai) {
         game_service.advance_game_state()
+    }
+      else {
+        if (game_service.get_current_player() === game_service.players[1]) {
+          if (this.player_is_placing_ships) {
+            this.ships_to_place = game_service.get_possible_boats();
+            this.ai.generateBoats(this.on_ship_placed);
+          }
+          else if (this.player_is_firing_missiles) {
+            this.fire_in_progress = false;
+            this.on_missile_fired(this.ai.fireLocation())
+          }
+        }
+      }
     }
 }
 
@@ -268,13 +440,13 @@ export default TopLevelComponent
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-errors.html">errors</a></li><li><a href="module-lang.html">lang</a></li><li><a href="module-sounds.html">sounds</a></li><li><a href="module-util.html">util</a></li></ul><h3>Classes</h3><ul><li><a href="GameBoardComponent.html">GameBoardComponent</a></li><li><a href="GameStateService.html">GameStateService</a></li><li><a href="GridCellComponent.html">GridCellComponent</a></li><li><a href="module-errors.InvalidAdvanceStateError.html">InvalidAdvanceStateError</a></li><li><a href="module-errors.InvalidMissileFireAttemptError.html">InvalidMissileFireAttemptError</a></li><li><a href="module-errors.InvalidShipPlacementError.html">InvalidShipPlacementError</a></li><li><a href="module-sounds-Sound.html">Sound</a></li><li><a href="ScoreBoardComponent.html">ScoreBoardComponent</a></li><li><a href="TopLevelComponent.html">TopLevelComponent</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-errors.html">errors</a></li><li><a href="module-lang.html">lang</a></li><li><a href="module-sounds.html">sounds</a></li><li><a href="module-util.html">util</a></li></ul><h3>Classes</h3><ul><li><a href="AI.html">AI</a></li><li><a href="GameBoardComponent.html">GameBoardComponent</a></li><li><a href="GameStateService.html">GameStateService</a></li><li><a href="GridCellComponent.html">GridCellComponent</a></li><li><a href="module-errors.InvalidAdvanceStateError.html">InvalidAdvanceStateError</a></li><li><a href="module-errors.InvalidMissileFireAttemptError.html">InvalidMissileFireAttemptError</a></li><li><a href="module-errors.InvalidShipPlacementError.html">InvalidShipPlacementError</a></li><li><a href="module-sounds-Sound.html">Sound</a></li><li><a href="ScoreBoardComponent.html">ScoreBoardComponent</a></li><li><a href="TopLevelComponent.html">TopLevelComponent</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.5</a> on Sat Sep 12 2020 16:40:09 GMT-0500 (Central Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.5</a> on Fri Oct 02 2020 15:18:37 GMT-0500 (Central Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>
