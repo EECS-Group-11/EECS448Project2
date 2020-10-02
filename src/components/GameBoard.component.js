@@ -107,11 +107,9 @@ class GameBoardComponent extends Component {
         // pressed/released the shift key.
         const keyup_fn = this.on_keyup.bind(this)
         const keydown_fn = this.on_keydown.bind(this)
-        const keypress_fn = this.on_keypress.bind(this)
         this.bound_fns.push(keyup_fn, keydown_fn)
         window.addEventListener('keyup', keyup_fn)
         window.addEventListener('keydown', keydown_fn)
-        window.addEventListener('keypress', keypress_fn)
     }
 
     /**
@@ -123,7 +121,6 @@ class GameBoardComponent extends Component {
         const [keyup_fn, keydown_fn] = this.bound_fns
         window.removeEventListener('keyup', keyup_fn)
         window.removeEventListener('keydown', keydown_fn)
-        window.removeEventListener('keypress', keypress_fn)
     }
 
     /**
@@ -154,7 +151,7 @@ class GameBoardComponent extends Component {
             }else{
                 this.$emit('horizbombfired', row_i)
             }
-
+            this.bomb_mode = false;
         }
 
     }
@@ -254,6 +251,12 @@ class GameBoardComponent extends Component {
                 this.on_cell_hover(this.ship_ghost_cells[0][0], this.ship_ghost_cells[0][1])
             }
         }
+        else if (event.key === ' ') {
+          event.preventDefault()
+          if(game_service.get_player_bombs() > 0){
+              this.bomb_mode = !this.bomb_mode
+          }
+        }
     }
 
     /**
@@ -267,22 +270,6 @@ class GameBoardComponent extends Component {
                 this.on_cell_hover(this.ship_ghost_cells[0][0], this.ship_ghost_cells[0][1])
             }
         }
-    }
-    /**
-     * When keypressed, check to see if the space bar was pressed.
-     * @param event
-     */
-    on_keypress(event){
-        if(event.keyCode === 32){
-            if(game_service.get_player_bombs() > 0){
-                if(this.bomb_mode === false){
-                    this.bomb_mode = true
-                }else{
-                this.bomb_mode = false
-                }
-            }
-        }
-
     }
 }
 
