@@ -272,7 +272,7 @@ class TopLevelComponent extends Component {
 	 */
 	difficulty(n){
 		game_service.set_ai_difficulty(n);
-		this.on_state_change();
+		game_service.advance_game_state();
 	}
 
 	/**
@@ -281,7 +281,7 @@ class TopLevelComponent extends Component {
 	 */
 	async game_mode(n){
 		game_service.set_game_mode(n);
-		this.on_state_change();
+		game_service.advance_game_state();
 	}
 
     /**

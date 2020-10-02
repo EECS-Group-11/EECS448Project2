@@ -1,4 +1,4 @@
-import { Player, GridCellState, GameState, clone, ShipType, isShipType, isShipCell, isValidTargetCell } from '../module/util.js'
+import { Player, GridCellState, GameState, clone, ShipType, isShipType, isShipCell, isValidTargetCell, AIDifficulty } from '../module/util.js'
 import { InvalidShipPlacementError, InvalidAdvanceStateError, InvalidMissileFireAttemptError } from '../module/errors.js'
 import theAI from './AI.service.js'
 
@@ -63,7 +63,14 @@ export class GameStateService {
      * @return {number}
      */
 	set_ai_difficulty(number){
-		this.current_state = GameState.ChoosingNumberOfShips;
+		// this.current_state = GameState.ChoosingNumberOfShips;
+		if (number === 1) {
+			this.difficulty = 1;
+		} else if (number === 2) {
+			this.difficulty = 2;
+		} else if (number === 3) {
+			this.difficulty = 3;
+		}
 	}
 
 	/**
@@ -73,9 +80,10 @@ export class GameStateService {
      */
 	set_game_mode(number) {
 		if (number === 1) {
-			this.current_state = GameState.ChoosingNumberOfShips;
+			// this.current_state = GameState.ChoosingNumberOfShips;
+			this.has_ai = false;
 		} else if (number === 2) {
-			this.current_state = GameState.ChoosingAIDifficulty;
+			this.has_ai = true;
 		}
 	}
 
@@ -158,8 +166,13 @@ export class GameStateService {
      * Determines if there's an AI playing or not
      * @type {boolean}
      */
-    has_ai = true
+    has_ai = false
 
+	/**
+	 * AI difficulty
+	 * @type {number}
+	 */
+	difficulty = 1;
     /**
      * Used as a bridge to TopLevel to use its functions for AI player
      * @type {function}
@@ -316,6 +329,8 @@ export class GameStateService {
      */
 	advance_game_state() {
         /** functions to be made that validate:
+		 * -1) choose game mode
+		 * 0) choose game ai difficulty
          * 1) number of ships
          * 2) player one placement
          * 3) player two placement OR AI generate board
@@ -325,7 +340,28 @@ export class GameStateService {
          * 7) advance to player one
          * 8) player win
          */
-		if (this.current_state === GameState.ChoosingNumberOfShips) {
+		if (this.current_state === GameState.ChoosingGameMode) {
+			if (this.has_ai) {
+				this.current_state = GameState.ChoosingAIDifficulty;
+			} else if (!this.has_ai) {
+				this.current_state = GameState.ChoosingNumberOfShips;
+			} else {
+				throw new InvalidAdvanceStateError("Invalid Game Mode");
+			}
+		} else if (this.current_state === GameState.ChoosingAIDifficulty) {
+			if (this.difficulty === 1) {
+				theAI.setDifficulty(1);
+				this.current_state = GameState.ChoosingNumberOfShips;
+			} else if (this.difficulty === 2) {
+				theAI.setDifficulty(2);
+				this.current_state = GameState.ChoosingNumberOfShips;
+			} else if (this.difficulty === 3) {
+				theAI.setDifficulty(3);
+				this.current_state = GameState.ChoosingNumberOfShips;
+			} else {
+				throw new InvalidAdvanceStateError("Invalid AI Difficulty");
+			}
+		} else if (this.current_state === GameState.ChoosingNumberOfShips) {
 			if (this.n_boats >= 1 && this.n_boats <= 5) {
               if (!this.has_ai) {
 				this.current_state = GameState.PromptPlayerChange;
@@ -425,16 +461,7 @@ export class GameStateService {
 			this.current_state = this.post_player_change_state
 			this.post_player_change_state = undefined
 		}
-		else if (this.current_state === GameState.ChoosingGameMode) {
-			if (this.n_boats >= 1 && this.n_boats <= 5) {
-				this.current_state = GameState.PromptPlayerChange;
-				this.post_player_change_state = GameState.PlayerSetup;
-				this.current_player = Player.One;
-				this.current_opponent = Player.Two;
-			} else {
-				throw new InvalidAdvanceStateError("Invalid Number of Boats");
-			}
-		}
+		
 
 		let winner = this.get_winner();
 		if (winner) {

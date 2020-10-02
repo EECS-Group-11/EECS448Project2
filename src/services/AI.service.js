@@ -96,6 +96,20 @@ class AI {
 		}
 
 	}
+
+	/**
+	 * Sets the difficulty for the AI
+	 * @param {number} number difficulty 1-easy, 2-medium, 3-hard
+	 */
+	setDifficulty(number) {
+		if (number === 1) {
+			this.difficulty = AID.Easy;
+		} else if (number === 2) {
+			this.difficulty = AID.Medium;
+		} else if (number === 3) {
+			this.difficulty = AID.Hard;
+		}
+	}
 }
 
 const theAI = new AI()
