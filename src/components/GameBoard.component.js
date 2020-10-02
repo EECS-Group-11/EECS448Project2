@@ -254,6 +254,9 @@ class GameBoardComponent extends Component {
                 this.on_cell_hover(this.ship_ghost_cells[0][0], this.ship_ghost_cells[0][1])
             }
         }
+        else if (event.key === 'Space') {
+          event.preventDefault()
+        }
     }
 
     /**
@@ -274,6 +277,7 @@ class GameBoardComponent extends Component {
      */
     on_keypress(event){
         if(event.keyCode === 32){
+          event.preventDefault()
             if(game_service.get_player_bombs() > 0){
                 if(this.bomb_mode === false){
                     this.bomb_mode = true

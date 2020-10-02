@@ -32,7 +32,7 @@ const template = `
                 <div class="buttonTest" id="buttonOption2">
                     <button @click="difficulty(1)" id="dub-arrow"><img src="https://github.com/atloomer/atloomer.github.io/blob/master/img/iconmonstr-arrow-48-240.png?raw=true" alt="" />
                     </button>
-                    <a href="#">easv</a>
+                    <a href="#">easy</a>
                 </div>
                 <div class="buttonTest" id="buttonOption2">
                     <button @click="difficulty(2)" id="dub-arrow"><img src="https://github.com/atloomer/atloomer.github.io/blob/master/img/iconmonstr-arrow-48-240.png?raw=true" alt="" />
@@ -92,7 +92,7 @@ const template = `
             </div>
         </div>
         <div
-			v-if="current_state !== GameState.ChoosingNumberOfShips && current_state !== GameState.PromptPlayerChange 
+			v-if="current_state !== GameState.ChoosingNumberOfShips && current_state !== GameState.PromptPlayerChange
 			&& current_state !== GameState.ChoosingGameMode
 			&& current_state !== GameState.ChoosingAIDifficulty && instructions"
             class="instructions"
@@ -118,7 +118,7 @@ const template = `
                 ></app-game-board>
                 <div class="fleet-label">Opposing fleet</div>
             </div>
-    
+
             <!-- Player's board -->
             <div class="game-board">
                 <app-game-board
@@ -144,7 +144,7 @@ const template = `
                 ></app-game-board>
                 <div class="fleet-label">{{ current_player_display }}'s fleet (winner)</div>
             </div>
-    
+
             <!-- Loser's board -->
             <div class="game-board">
                 <app-game-board
