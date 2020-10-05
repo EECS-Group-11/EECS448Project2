@@ -38,6 +38,7 @@
         <script>
             let loc = window.location.href
             if ( loc.endsWith('index.html') ) loc = loc.slice(0, -('index.html').length)
+            loc = loc.split(/[?#]/)[0];
             if ( !loc.endsWith('/') ) loc = `${loc}/`
 
             window.APP_BASE_PATH = loc
